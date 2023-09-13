@@ -1,0 +1,47 @@
+import pandas as pd
+from scipy import stats
+
+
+titanic_data = pd.read_csv("/content/test.csv")
+
+# Extract the column containing numeric values (e.g., 'Age' or 'Fare')
+numeric_column = titanic_data['Age']
+
+# Calculate mean
+mean = numeric_column.mean()
+
+print(f"Mean: {mean:.2f}")
+
+
+
+# Calculate median
+median = numeric_column.median()
+print(f"Median: {median:.2f}")
+
+# Calculate mode
+mode = stats.mode(numeric_column)
+print(f"Mode: {mode.mode[0]} (appeared {mode.count[0]} times)")
+
+**TRYING WITH THE TRAIN DATASET**
+
+import pandas as pd
+from scipy import stats
+
+titanic_data = pd.read_csv("/content/train.csv")
+# Extract the column containing numeric values (e.g., 'Age' or 'Fare')
+numeric_column = titanic_data['Age']
+
+# Calculate mean
+mean = numeric_column.mean()
+
+print(f"Mean: {mean:.2f}")
+
+
+
+# Calculate median
+median = numeric_column.median()
+print(f"Median: {median:.2f}")
+
+# Calculate mode
+mode = stats.mode(numeric_column)
+print(f"Mode: {mode.mode[0]} (appeared {mode.count[0]} times)")
