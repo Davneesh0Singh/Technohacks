@@ -1,0 +1,76 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+import seaborn as sns
+
+train_df = pd.read_csv('/content/train.csv')
+test_df = pd.read_csv('/content/test.csv')
+
+gender_submission_df = pd.read_csv('/content/gender_submission.csv')
+
+combined_df = pd.concat([train_df, test_df], ignore_index=True)
+
+#handle the missing values
+combined_df.dropna(subset=['Survived'], inplace=True)
+combined_df['Age'].fillna(combined_df['Age'].median(), inplace=True)
+combined_df['Fare'].fillna(combined_df['Fare'].median(), inplace=True)
+combined_df['Embarked'].fillna(combined_df['Embarked'].mode()[0], inplace=True)
+
+
+#handle duplicates
+combined_df.drop_duplicates(inplace=True)
+
+# Step 3: Handling Outliers
+# Example: Removing outliers using z-score
+from scipy.stats import zscore
+z_scores = zscore(combined_df['Fare'])
+combined_df = combined_df[(np.abs(z_scores) < 3)]
+
+
+
+# Step 4: Data Type Conversion
+# Example: Convert Age and Fare to int
+combined_df['Age'] = combined_df['Age'].astype(int)
+combined_df['Fare'] = combined_df['Fare'].astype(int)
+
+train_df_cleaned = combined_df.iloc[:len(train_df)]
+test_df_cleaned = combined_df.iloc[len(train_df):]
+
+#split back the data
+train_df_cleaned = combined_df[:len(train_df)]
+test_df_cleaned = combined_df[len(train_df):]
+
+#Saving the cleaned data
+train_df_cleaned.to_csv('/content/train.csv', index=False)
+test_df_cleaned.to_csv('/content/test.csv', index=False)
+
+#print missing values
+print("Missing Values in Cleaned Train Dataset:")
+print(train_df_cleaned.isnull().sum())
+
+print("\nMissing Values in Cleaned Test Dataset:")
+print(test_df_cleaned.isnull().sum())
+
+#total number of null values
+total_null_values_train = train_df_cleaned.isnull().sum().sum()
+total_null_values_test = test_df_cleaned.isnull().sum().sum()
+
+print("Total Null Values in Cleaned Train Dataset:", total_null_values_train)
+print("Total Null Values in Cleaned Test Dataset:", total_null_values_test)
+
+#first few values;
+print("Cleaned Train Dataset:")
+print(train_df_cleaned.head())
+
+print("\nCleaned Test Dataset:")
+print(test_df_cleaned.head())
+
+#last few Values of cleaned dataset
+print("Last Few Rows of Cleaned Train Dataset:")
+print(train_df_cleaned.tail())
+
+
+**Saving to new csv file**
+
+train_df_cleaned.to_csv('/content/train.csv', index=False)
+test_df_cleaned.to_csv('/content/test.csv', index=False)
